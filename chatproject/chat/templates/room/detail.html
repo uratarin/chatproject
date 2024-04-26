@@ -32,74 +32,61 @@
     </div>
 
     <script>
-      wind.onload = convertTimestampsToLocal;
-      const url = 'ws://' + window.location.host + '/ws/room/{{room.id}}';
-      const ws = new WebSocket(url);
-      const currentUsername = "{{ request.user.username }}";
-      document
-        .getElementById("send")
-        .onclick = function sendMessage() {
+        window.onload = convertTimestampsToLocal;
+        const url = 'ws://' + window.location.host + '/ws/room/{{ room.id }}';
+        const ws = new WebSocket(url);
+        const currentUsername = "{{ request.user.username }}";
+
+        document.getElementById("send").onclick = function sendMessage() {
           const sendData = {
-            message: document
-              .getElementById('message')
-              .value
+            message: document.getElementById('message').value
           }
-          ws.send(JSON.stringfy(sendData));
-          document
-            .getElementById('message')
-            .value = '';
+          ws.send(JSON.stringify(sendData));
+          document.getElementById('message').value = '';
         }
 
-      function updateScroll() {
-        const element = document.getElementById("chat-list");
-        element.scrollTop = element.scrollHeight;
-      }
+        function updateScroll() {
+          const element = document.getElementById("chat-list");
+          element.scrollTop = element.scrollHeight;
+        }
 
-      function addMessage(message, sender, timestamp) {
-        const messageElement = document.createElement("div");
-        messageElement
-          .classlist
-          .add("chat-message");
-        messageElement
-          .classlist
-          .add(
-            sender === currentUsername
-            ? "right"
-            : "left");
-        const formattedTimestamp = formattedTimestamp(timestamp);
-        messageElement.innerHTML = '${sender}: ${message} <span class="text-muted small">(${formattedTimestamp})</span>';
-        document
-          .getElementById("chat-list")
-          .appendChild(messageElement);
-        updateScroll();
-      }
+        function addMessage(message, sender, timestamp) {
+          const messageElement = document.createElement("div");
+          messageElement.classList.add("chat-message");
+          messageElement.classList.add(sender === currentUsername ? "right" : "left");
+          const formattedTimestamp = formattedTimestamp(timestamp);
+          messageElement.innerHTML = `${sender}: ${message} <span class="text-muted small">(${formattedTimestamp})</span>`;
+          document.getElementById("chat-list").appendChild(messageElement);
+          updateScroll();
+        }
 
-      ws.onerror = e => {
-        console.log(e);
-      }
+        ws.onerror = e => {
+          console.log(e);
+        }
 
-      ws.onmessage = e => {
-        const receiveData = JSON.parse(e.data);
-        console.log(receiveData);
-        addMessage(receiveData.user, receiveData.message, receiveData.timestamp);
-      }
+        ws.onmessage = e => {
+          const receiveData = JSON.parse(e.data);
+          console.log(receiveData);
+          addMessage(receiveData.user, receiveData.message, receiveData.timestamp);
+        }
 
-      function formattedTimestamp(utcTimestamp){
-        const localDate = new Date(utcTimestamp + 'Z');
-        return localDate.toLocalString();
-      }
+        function formattedTimestamp(utcTimestamp){
+          const localDate = new Date(utcTimestamp + 'Z');
+          return localDate.toLocaleString();
+        }
 
-      function convertTimestampsToLocal(){
-        const messages = document.querySelectorAll('.chat-message');
+        function convertTimestampsToLocal(){
+          const messages = document.querySelectorAll('.chat-message');
 
-        messages.forEach(message => {
-          const utcTimestamp = message.getAttribute('data-timestamp');
-          const formattedTimestamp = formatTimestamp(utcTimestamp);
+          messages.forEach(message => {
+            const utcTimestamp = message.getAttribute('data-timestamp');
+            const formattedTimestamp = formattedTimestamp(utcTimestamp);
 
-          const timestampElement = message.querySelector('.timestamp');
-          timestampElement.textContent = '(${formattedTimestamp})';
-        });
-      }
+            const timestampElement = message.querySelector('.timestamp');
+            timestampElement.textContent = `(${formattedTimestamp})`;
+          });
+        }
+
     </script>
 
     <style>
