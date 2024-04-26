@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'chat'
+    'chat',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'chatproject.wsgi.application'
+
 
 
 # Database
@@ -126,7 +128,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.Account'
 
-ASGI_APPLICATION = 'chatproject.asgi.application'
+
+ASGI_APPLICATION = 'chatproject.asgi.application'  # myprojectはプロジェクト名に置き換えてください
+
 
 LOGIN_REDIRECT_URL = '/'
 
