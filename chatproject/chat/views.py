@@ -39,13 +39,19 @@ class RoomDetailView(generic.DeleteView):
         print("form", form)
         print("request", request)
         print("request post", request.POST)
-        # if form.is_valid():
-        if True:
+        if form.is_valid():
             print("success")
             message = form.save(commit=False)
             message.room = self.get_object()
-            message.posted_by = request.user #ログインユーザーを投稿者とする
+            message.posted_by = request.user
             message.save()
-            return redirect('room.detail', pk=self.get_object().pk)
+            
+            return redirect('room_detail', pk=self.get_object().pk)  # redirectの引数を修正
+        else:
+            print("Form errors:", form.errors)
+        return self.get(request, *args, **kwargs)
+
+    
+            
         print("failed")
         return self.get(request, *args, **kwargs)
